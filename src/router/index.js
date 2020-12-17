@@ -13,7 +13,15 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    redirect: '/realTimeBattle',
+    children: [
+      {
+        path: 'realTimeBattle',
+        name: 'RealTimeBattle',
+        component: () => import('@/views/realTimeBattle/RealTimeBattle.vue'),
+      },
+    ]
   }
 ]
 
