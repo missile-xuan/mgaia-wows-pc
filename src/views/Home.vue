@@ -75,6 +75,10 @@ export default {
       this.$store.commit('battle/SET_ROW_DATA',data)
       //解析逻辑开始
       for(let player of dataJston.vehicles){
+        // id: 269944608
+        // name: ":Lee:"
+        // relation: 2
+        // shipId: 4183766992
         console.log(player)
       }
       
