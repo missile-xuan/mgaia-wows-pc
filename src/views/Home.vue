@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <el-container>
+    <el-container style="height:100%">
       <el-header class="home-menu-div el-badge__content--primary" style="" height="60px">
         <div class="left-title-div">
           <div class="title" style="">品种委员会</div>
@@ -29,7 +29,21 @@
               <el-dropdown-item @click.native="logout()" style="padding: 0 20px;width: 60px;">退出</el-dropdown-item>
               <el-dropdown-item @click.native="analyticBattleJson()" style="padding: 0 20px;width: 60px;">解析</el-dropdown-item>
             </el-dropdown-menu>
-          </el-dropdown>          
+          </el-dropdown>      
+          <!-- 服务器选择 -->
+          <el-dropdown trigger="click">
+            <div style="display:flex;cursor: pointer;color:white;">
+              <div style="line-height: 60px;margin-left:10px;">{{ $commonUtils.getDictionariesLabel("Server",$store.getters.server) }}</div>
+            </div>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="server in $dictionaries.get('Server')" 
+                :key="server.value" style="padding: 0 20px;width: 60px;"
+                @click.native="$store.commit('cust/SET_SERVER',server.value)"
+              >
+                {{server.label}}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>      
         </div>
       </el-header>
       <el-container class="body-container">
@@ -40,6 +54,8 @@
 </template>
 
 <script>
+
+import {findPlayerTealTimeBattleOverallData} from '@/api/wowsBattle.js'
 const fs = window.require('fs')
 export default {
   name: 'Home',
@@ -47,41 +63,58 @@ export default {
   },
   data() {
     return {
-      activeRoute:''
+      activeRoute:'',
+      loopTask:null
     }
   },
   created:function(){
 
     this.$store.commit('wowsConfig/SET_REAL_BATTLE_PATH',this.$electronStore.get("realBattlePath"))
     this.activeRoute=this.$route.fullPath;
-    fs.exists( this.$store.getters.realBattlePath+'/tempArenaInfo.json',(exists)=>{
-      if(exists){
-        this.analyticBattleJson()
-      }else{
-        console.log("未开始战斗");
-      }
-    });
+
+    // 循环调用
+    this.loopTask  = setInterval(()=>{
+      fs.exists( this.$store.getters.realBattlePath+'/tempArenaInfo.json',(exists)=>{
+        if(exists){
+          this.analyticBattleJson()
+        }else{
+          console.log("未开始战斗");
+        }
+      });
+    },5000)
+    
+  },
+  // 销毁
+  beforeDestroy(){
+    console.log("触发销毁")
+    clearInterval(this.loopTask)
   },
   methods:{
     // 解析实施战斗文件
     analyticBattleJson(){
       const data = fs.readFileSync(this.$store.getters.realBattlePath+'/tempArenaInfo.json', 'utf-8');
-      // JSON.stringify
-      // if(this.$store.getters.rawData== data){
-      //   console.log("相等")
-      //   return
-      // }
+      JSON.stringify
+      if(this.$store.getters.rawData== data){
+        console.log("相等")
+        return
+      }
       let dataJston = JSON.parse(data);
       this.$store.commit('battle/SET_ROW_DATA',data)
       //解析逻辑开始
-      for(let player of dataJston.vehicles){
-        // id: 269944608
-        // name: ":Lee:"
-        // relation: 2
-        // shipId: 4183766992
-        console.log(player)
-      }
-      
+      //清除战斗团队
+      this.$store.dispatch('battle/deleteBattleTeam')
+      //添加战斗团队
+      this.$store.dispatch('battle/addBattleTeam',dataJston)
+      // 获取战斗团队数据
+      this.$store.dispatch('battle/setBattleTeamData')
+    },
+    // 实时战绩查询
+    findPlayerTealTimeBattleOverallData(nickname,shipId,server){
+      findPlayerTealTimeBattleOverallData({nickname:nickname,shipId:shipId,server:server}).then((response) => {
+        response
+      }).catch(error=>{
+        error
+      })
     },
     //退出
     logout(){
@@ -98,6 +131,12 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.home{
+  height:100%
+}
+.body-container{
+  overflow: auto;
+}
 .home-menu-div{
   color:white;
   display:flex;

@@ -37,6 +37,7 @@ export default {
     let pullInfo = setInterval(()=>{
       if(!this.$commonUtils.isNull(this.uuid)){
         pullWechatLoginByUuid({uuid:this.uuid}).then((response) => {
+          console.log("拉取")
           if(!this.$commonUtils.isNull(response.openid)){
             console.log(response)
             clearInterval(pullInfo)

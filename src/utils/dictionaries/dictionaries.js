@@ -2,5 +2,13 @@
 //-- 创建时间：2020-11-25 10:05:55
 //-- 功能：字典项维护
 
-const dictionariesMap = {EnableStatus:[{label:"启用",value:"True"},{label:"禁用",value:"False"}],FileUploadStatus:[{label:"临时",value:"Temp"},{label:"永久",value:"Used"}],QuotationStatus:[{label:"持平",value:"Flat"},{label:"小涨",value:"SmallRise"},{label:"大涨",value:"BigRise"},{label:"小跌",value:"SmallFall"},{label:"大跌",value:"BigFall"}],IndexType:[{label:"数字类型",value:"Number"},{label:"文本类型",value:"String"}]}
-export default {get(name) {return dictionariesMap[name]}}
+const dictionariesMap = { 
+  EnableStatus: [{ label: "启用", value: "True" }, { label: "禁用", value: "False" }], 
+  Server:[
+    { label: "欧服", value: "eu" },
+    { label: "亚服", value: "asia" },
+    { label: "美服", value: "com" },
+    { label: "俄服", value: "ru" },
+  ] 
+}
+export default { get(name) { return dictionariesMap[name] } }

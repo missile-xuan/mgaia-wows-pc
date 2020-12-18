@@ -3,7 +3,8 @@ const state = {
     nickName: '未授权',
     // 头像
     avatarUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-    appid:''
+    appid:'',
+    server:'eu'
 }
 
 const mutations = {
@@ -18,7 +19,11 @@ const mutations = {
     },
     SET_APPID: (state, appid) => {
       state.appid = appid
-    }
+    },
+    SET_SERVER: (state, server) => {
+        console.log(server)
+        state.server = server
+    },
 }
 const actions = {
     

@@ -33,9 +33,9 @@ service.interceptors.response.use(
 	},
 	error => {
 		if(error.response.status==500){
-			MessageBox.alert(error.response.message, "返回异常", {
-				type: "error"
-			});
+			// MessageBox.alert(error.response.message, "返回异常", {
+			// 	type: "error"
+			// });
 			return Promise.reject(error)
 		}else if(error.response.status==405){
 			MessageBox.alert(error.response.message, "接口类型错误", {
