@@ -3,7 +3,7 @@
     <el-container style="height:100%">
       <el-header class="home-menu-div el-badge__content--primary" style="" height="60px">
         <div class="left-title-div">
-          <div class="title" style="">品种委员会</div>
+          <div class="title" style="">WOWS憨批伴侣</div>
         </div>
         <div style="flex:1;padding: 0;">
           <el-menu 
@@ -14,9 +14,11 @@
             active-text-color="#ffd04b"
             router
           >
-            <el-menu-item index="/realTimeBattle">日度数据整理</el-menu-item>
-            <el-menu-item>自定义指标数据</el-menu-item>
-            <el-menu-item>日度数据展示</el-menu-item>
+            <el-menu-item index="/realTimeBattle">实时战斗</el-menu-item>
+            <el-menu-item>玩家查询</el-menu-item>
+            <el-menu-item>自定义查询</el-menu-item>
+            <el-menu-item>舰船查询</el-menu-item>
+            <el-menu-item>其他</el-menu-item>
           </el-menu>
         </div>
         <div style="display:flex;justify-content:center;padding-right: 20px;">
@@ -27,7 +29,7 @@
             </div>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="logout()" style="padding: 0 20px;width: 60px;">退出</el-dropdown-item>
-              <el-dropdown-item @click.native="analyticBattleJson()" style="padding: 0 20px;width: 60px;">解析</el-dropdown-item>
+              <el-dropdown-item @click.native="setRealBattlePath" style="padding: 0 20px;width: 60px;">配置地址</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>      
           <!-- 服务器选择 -->
@@ -55,7 +57,6 @@
 
 <script>
 
-import {findPlayerTealTimeBattleOverallData} from '@/api/wowsBattle.js'
 const fs = window.require('fs')
 export default {
   name: 'Home',
@@ -108,13 +109,18 @@ export default {
       // 获取战斗团队数据
       this.$store.dispatch('battle/setBattleTeamData')
     },
-    // 实时战绩查询
-    findPlayerTealTimeBattleOverallData(nickname,shipId,server){
-      findPlayerTealTimeBattleOverallData({nickname:nickname,shipId:shipId,server:server}).then((response) => {
-        response
-      }).catch(error=>{
-        error
-      })
+    // 设置配置地址
+    async setRealBattlePath(){
+      // 打开文件夹的文档
+      // https://www.electronjs.org/docs/api/dialog#dialogshowopendialogbrowserwindow-options
+      let path = await  this.$remote.dialog.showOpenDialog({
+        properties: ['openDirectory'],
+      });
+      console.log(path)
+      if(path.filePaths.length==0){return}
+      this.$store.commit('wowsConfig/SET_REAL_BATTLE_PATH',path.filePaths[0])
+      // 落地
+      this.$electronStore.set("realBattlePath",path.filePaths[0])
     },
     //退出
     logout(){

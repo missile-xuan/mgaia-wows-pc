@@ -1,14 +1,34 @@
 <template>
   <div class="home">
-    登录页面
-    <el-button @click="getNewUuid">拉取</el-button>
-    <img :src="qrcodeSrc">
+    
+    <el-card class="box-card">
+      <div style="text-align: center;">
+        <el-image
+        style="height:200px;width:200px"
+        :src="qr"
+        :preview-src-list="[qr]"></el-image>
+      </div>
+      <el-divider>通过憨批助手小程序扫下方二维码登录</el-divider>
+      <div style="height:60px;"></div>
+      <div style="text-align: center;">
+        <el-image
+        style="height:200px;width:200px"
+        :src="qrcodeSrc"
+        :preview-src-list="[qrcodeSrc]">
+        </el-image>
+      </div>
+      <div style="text-align: center;"><el-button @click="getNewUuid">刷新二维码</el-button></div>
+      
+      
+    </el-card>
+    
   </div>
 </template>
 
 <script>
 // getNewUuid
 import {getNewUuid,pullWechatLoginByUuid,obsoleteQRcode} from '@/api/wechartLogin.js'
+import qr from '@/assets/qrcode.jpg'
 import QRCode  from 'qrcode'
 export default {
   name: 'Login',
@@ -17,7 +37,8 @@ export default {
   data() {
     return {
       uuid:'',
-      qrcodeSrc:''
+      qrcodeSrc:'',
+      qr:qr
     }
   },
   watch:{
@@ -72,3 +93,14 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+.home{
+  padding-top 100px
+}
+.box-card{
+  width 600px
+  height 700px
+  margin: 0 auto;
+}
+</style>

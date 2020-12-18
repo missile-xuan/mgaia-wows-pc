@@ -22,7 +22,9 @@ async function createWindow() {
       nodeIntegration: true,
       // 跨域
       webSecurity: false
-    }
+    },
+    // eslint-disable-next-line no-undef
+    icon: `${__static}/app.ico`
   })
   // 隐藏菜单栏
   win.setMenu(null);

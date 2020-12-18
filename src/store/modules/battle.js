@@ -33,13 +33,11 @@ const actions = {
   },
   // 添加战斗团队
   addBattleTeam({commit},dataJston){
-    console.log(dataJston.dateTime)
     for(let player of dataJston.vehicles){
       player.dateTime = dataJston.dateTime
       state.battleTeam[player.name]={...player}
     }
     commit("SET_BATTLE_TEAM",state.battleTeam);
-    console.log(state.battleTeam)
   },
   // 获取战斗数据
   setBattleTeamData({commit}){
