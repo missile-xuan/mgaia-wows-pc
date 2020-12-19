@@ -6,9 +6,12 @@
       </div>
     </div>
     <!-- <div>{{$store.getters.battleTeam}}</div> -->
+    
     <div v-else class="battle-div">
       <!-- 左边列表 -->
       <div class="battle-list el-badge__content--primary">
+        <div style="text-align: center;padding: 10px;"><el-button style="width:100%" @click="$store.dispatch('battle/setBattleTeamData')" size="small">重载最新数据</el-button></div>
+        
         <div :class="{'battle-button':true,active:battleActive=='now'}"
           @click="setBattleData('now')"
         >当前</div>
@@ -21,7 +24,11 @@
         </div>
       </div>
       <div class="battle-info">
+        
         <div class="left">
+          <div>
+            <el-input v-model="darkSearch" size="small" placeholder="ID模糊搜索"></el-input>
+          </div>
           <div class="player-info" v-for="player in showBattle.left" :key="player.id">
             <template v-if="$commonUtils.isNull(player.data)">
               <loading></loading>
@@ -30,22 +37,25 @@
               <div class="shipimg" v-if="player.data=='隐藏战绩或查询失败'">
                 隐藏战绩<br>或者<br>查询失败
               </div>
-              <div v-else class="shipimg">
-                <img class="shipimg" :src="player.data.playerShipData.image">
+              <div class="shipimg" v-else-if="player.data.playerShipData==null">
+                无法查询到船只
               </div>
-              <div class="player-name">
+              <div v-else class="shipimg">
+                <img class="shipimg" :src="player.data.playerShipData.image" >
+              </div>
+              <div :class="{'player-name':true,find:!$commonUtils.isNull(darkSearch)&&player.name.indexOf(darkSearch)!=-1}"  @dblclick="playerClick(player)">
                 <div class="name">{{player.name}}</div>
-                <div class="ship" v-if="player.data!='隐藏战绩或查询失败'">{{player.data.playerShipData.shipName}}</div>
+                <div class="ship" v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
               </div>
               <div v-if="player.data!='隐藏战绩或查询失败'">
-                <div class="battle-all">
+                <div class="battle-all" v-if="player.data.playerClanData!=null">
                   <div>
                     总体:
                   </div>
                   <div>
                     <img class="icon-img" src="~@/assets/composite/count.png">{{player.data.playerClanData.fightingNum}}
                   </div>
-                  <div>
+                  <div :class="getColor(player.data.playerClanData.winningProbability)">
                     <img class="icon-img" src="~@/assets/composite/win.png">{{player.data.playerClanData.winningProbability}}
                   </div>
                   <div>
@@ -62,7 +72,7 @@
                   </div>
 
                 </div>
-                <div class="battle-all">
+                <div class="battle-all" v-if="player.data.playerShipData!=null">
                   <div>
                     单船:
                   </div>
@@ -91,30 +101,36 @@
         </div>
         <div class="center"></div>
         <div class="right">
+          <div class="remind" >
+            提醒：双击id可跳转战绩详情
+          </div>
           <div class="player-info" style="justify-content: flex-start" v-for="player in showBattle.right" :key="player.id">
             <template v-if="$commonUtils.isNull(player.data)">
               <loading></loading>
             </template>
             <template v-else>
               <div class="shipimg" v-if="player.data=='隐藏战绩或查询失败'">
-                隐藏战绩或查询失败
+                隐藏战绩<br>或者<br>查询失败
+              </div>
+              <div class="shipimg" v-else-if="player.data.playerShipData==null">
+                无法查询到船只
               </div>
               <div v-else class="shipimg">
                 <img class="shipimg" :src="player.data.playerShipData.image">
               </div>
-              <div class="player-name">
-                <div class="name">{{player.name}}</div>
-                <div class="ship" v-if="player.data!='隐藏战绩或查询失败'">{{player.data.playerShipData.shipName}}</div>
+              <div :class="{'player-name':true,find:!$commonUtils.isNull(darkSearch)&&player.name.indexOf(darkSearch)!=-1}" @dblclick="playerClick(player)">
+                <div class="name" >{{player.name}}</div>
+                <div class="ship" v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
               </div>
               <div v-if="player.data!='隐藏战绩或查询失败'">
-                <div class="battle-all">
+                <div class="battle-all" v-if="player.data.playerClanData!=null">
                   <div>
                     总体:
                   </div>
                   <div>
                     <img class="icon-img" src="~@/assets/composite/count.png">{{player.data.playerClanData.fightingNum}}
                   </div>
-                  <div>
+                  <div :class="getColor(player.data.playerClanData.winningProbability)">
                     <img class="icon-img" src="~@/assets/composite/win.png">{{player.data.playerClanData.winningProbability}}
                   </div>
                   <div>
@@ -131,7 +147,7 @@
                   </div>
 
                 </div>
-                <div class="battle-all">
+                <div class="battle-all" v-if="player.data.playerShipData!=null">
                   <div>
                     单船:
                   </div>
@@ -175,7 +191,8 @@ export default {
   data() {
     return {
       battleData:this.$store.getters.battleTeam,
-      battleActive:'now'
+      battleActive:'now',
+      darkSearch:''
     }
   },
   computed: {
@@ -212,12 +229,34 @@ export default {
         this.battleData = active[key]
       }
     },
-
+    // 选中
+    playerClick(player){
+      console.log( player)
+      if(this.$commonUtils.isNull(player.data)){return}
+      this.$store.commit('player/SET_NICKNAME',player.data.nickname)
+      this.$store.commit('player/SET_ACCOUNT_ID',player.data.accountId)
+      this.$store.dispatch('player/initData')
+      this.$router.push('/queryPlayer')
+    },
     formatDateTime(setBattleData){
       let key = Object.keys(setBattleData)[0]
       
       // 18.12.2020 10:22:23
       return moment(key,"D.M.YYYY hh:mm:ss").format("YYYY.M.D h:mm:ss")
+    },
+    getColor(str){
+      let num = parseFloat(str.slice(str.indexOf("(")+1,str.indexOf("%")))
+      if(num<45){
+        return 'd'
+      }else if(num<50){
+        return 'c'
+      }else if(num<55){
+        return 'b'
+      }else if(num<60){
+        return 'a'
+      }else{
+        return 's'
+      }
     }
   }
 }
@@ -259,17 +298,27 @@ export default {
     justify-content:space-between
 
     .left{
-      min-width 720px
+      min-width 800px
       flex 1
     }
     .right{
-      min-width 720px
+      min-width 800px
       flex 1
     }
   }
 }
+.remind{
+  height: 32px;
+  line-height: 32px;
+  color: $text-color-text-black;
+  padding:0 10px;
+}
+.find{
+  background: cadetblue;
+}
 .player-name{
   width:160px;
+  cursor: pointer;
 
   .name{
     height 35px
@@ -303,13 +352,13 @@ export default {
   width:60px
 }
 .battle-all>div:nth-child(3){
-  width:115px
+  width:125px
 }
 .battle-all>div:nth-child(4){
   width:58px
 }
 .battle-all>div:nth-child(5){
-  width:55px
+  width:65px
 }
 .battle-all>div:nth-child(6){
   width:70px
@@ -325,5 +374,20 @@ export default {
 .center{
   width 10px;
   background:#e6e6e6;
+}
+.s{
+  color :#8712e0
+}
+.a{
+  color :#122be0
+}
+.b{
+  color :#4bec08
+}
+.c{
+  
+}
+.d{
+  color :#ff0000
 }
 </style>

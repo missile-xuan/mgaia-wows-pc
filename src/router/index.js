@@ -21,6 +21,17 @@ const routes = [
         name: 'RealTimeBattle',
         component: () => import('@/views/realTimeBattle/RealTimeBattle.vue'),
       },
+      {
+        path: 'queryPlayer',
+        name: 'QueryPlayer',
+        component: () => import('@/views/queryPlayer/QueryPlayer.vue'),
+      },
+      {
+        path: 'help',
+        name: 'Help',
+        component: () => import('@/views/help/Help.vue'),
+      },
+      
     ]
   }
 ]

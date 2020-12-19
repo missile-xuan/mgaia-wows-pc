@@ -10,5 +10,13 @@ const getters = {
   rawData: state => state.battle.rawData,
   battleTeam: state => state.battle.battleTeam,
   historyBattleTeam: state => state.battle.historyBattleTeam,
+
+  //玩家
+  playerForm: state => state.player,
+  playerClanData:state => state.player.playerClanData,
+  likeNum: state => state.player.likeNum,
+  like: state => state.player.like,
+  playerCustomData:state => state.player.playerCustomData,
+  shipDataList:state => state.player.shipDataList,
 }
 export default getters

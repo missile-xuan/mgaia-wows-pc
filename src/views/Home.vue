@@ -7,7 +7,7 @@
         </div>
         <div style="flex:1;padding: 0;">
           <el-menu 
-            :default-active="activeRoute" 
+            :default-active="$route.fullPath" 
             mode="horizontal"
             background-color="#3D516B"
             text-color="#fff"
@@ -15,21 +15,48 @@
             router
           >
             <el-menu-item index="/realTimeBattle">实时战斗</el-menu-item>
-            <el-menu-item>玩家查询</el-menu-item>
-            <el-menu-item>自定义查询</el-menu-item>
-            <el-menu-item>舰船查询</el-menu-item>
-            <el-menu-item>其他</el-menu-item>
+            <el-menu-item index="/queryPlayer">查询</el-menu-item>
+            <el-menu-item index="/help">说明</el-menu-item>
           </el-menu>
         </div>
         <div style="display:flex;justify-content:center;padding-right: 20px;">
+          <div style="    padding: 13px 20px 0 0;">
+            <el-button  icon="el-icon-search" @click="findPlayerDialogVisible=true" size="small">{{$store.getters.playerForm.nickname}}</el-button>
+            <el-dialog
+              title="搜索玩家"
+              :visible.sync="findPlayerDialogVisible"
+              width="50%">
+              <el-row :gutter="20">
+                <el-col :span="12"><el-input v-model="findPlayer" size="small" @change="findPlayerFn" placeholder="玩家昵称"></el-input></el-col>
+                <el-col :span="6"><el-button  icon="el-icon-search" @click="findPlayerFn" size="small">搜索</el-button></el-col>
+              </el-row>
+              <el-divider></el-divider>
+              <el-table
+                v-loading="loadingTable"
+                :data="playerTableData"
+                height="500px"
+                style="width: 100%; "
+                @row-dblclick="playerClick">
+                <el-table-column
+                  prop="nickname"
+                  label="nickname">
+                </el-table-column>
+                <el-table-column
+                  prop="account_id"
+                  label="account_id">
+                </el-table-column>
+              </el-table>
+              <el-divider>双击选中玩家</el-divider>
+            </el-dialog>
+          </div>
           <el-dropdown trigger="click">
             <div style="display:flex;cursor: pointer;color:white;">
               <el-avatar :size="30" style="margin-top: 15px;" :src="$store.getters.avatarUrl"></el-avatar>
               <div style="line-height: 60px;margin-left:10px;">{{$store.getters.nickName}}</div>
             </div>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="logout()" style="padding: 0 20px;width: 60px;">退出</el-dropdown-item>
               <el-dropdown-item @click.native="setRealBattlePath" style="padding: 0 20px;width: 60px;">配置地址</el-dropdown-item>
+              <el-dropdown-item @click.native="logout()" style="padding: 0 20px;width: 60px;">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>      
           <!-- 服务器选择 -->
@@ -56,7 +83,7 @@
 </template>
 
 <script>
-
+ import {wowsApiForward} from '@/api/wowsBattle.js'
 const fs = window.require('fs')
 export default {
   name: 'Home',
@@ -65,7 +92,11 @@ export default {
   data() {
     return {
       activeRoute:'',
-      loopTask:null
+      loopTask:null,
+      findPlayerDialogVisible:false,
+      findPlayer:'',
+      playerTableData:[],
+      loadingTable:false
     }
   },
   created:function(){
@@ -121,6 +152,29 @@ export default {
       this.$store.commit('wowsConfig/SET_REAL_BATTLE_PATH',path.filePaths[0])
       // 落地
       this.$electronStore.set("realBattlePath",path.filePaths[0])
+    },
+    // 搜索玩家
+    findPlayerFn(){
+      this.loadingTable=true
+      let url = 'https://api.worldofwarships.'+this.$store.getters.server+'/wows/account/list/?search='+this.findPlayer
+      wowsApiForward({url:url}).then((response) => {
+        console.log(response)
+        this.playerTableData=response.data
+        this.loadingTable=false
+      }).catch(error=>{
+        console.log(error)
+        this.playerTableData=[]
+        this.loadingTable=false
+      })
+
+    },
+    // 选中
+    playerClick(row, column, event){
+      console.log( row, column, event)
+      this.$store.commit('player/SET_NICKNAME',row.nickname)
+      this.$store.commit('player/SET_ACCOUNT_ID',row.account_id)
+      this.$store.dispatch('player/initData')
+      this.findPlayerDialogVisible=false
     },
     //退出
     logout(){

@@ -1,5 +1,5 @@
 import {MessageBox} from 'element-ui';
-
+import commonUtils from '@/utils/commonUtils.js'
 import axios from 'axios'
 import config from './request.config.js'
 // import store from '@/store'
@@ -30,8 +30,10 @@ service.interceptors.response.use(
 			case 200 :
 				return Promise.resolve(response.data.data);			
 		}
+		return Promise.resolve(response.data)
 	},
 	error => {
+		commonUtils.isNull(error.response)
 		if(error.response.status==500){
 			// MessageBox.alert(error.response.message, "返回异常", {
 			// 	type: "error"

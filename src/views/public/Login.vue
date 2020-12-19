@@ -19,9 +19,9 @@
       </div>
       <div style="text-align: center;"><el-button @click="getNewUuid">刷新二维码</el-button></div>
       
-      
     </el-card>
-    
+    <div style="width: 20px;height: 20px; position: absolute;top: 0;" 
+      @dblclick="deleteRealBattlePath"></div>
   </div>
 </template>
 
@@ -89,7 +89,11 @@ export default {
         this.uuid=response
         console.log(response)
       })
+    },
+    deleteRealBattlePath(){
+      this.$electronStore.delete('realBattlePath')
     }
+    
   }
 }
 </script>
