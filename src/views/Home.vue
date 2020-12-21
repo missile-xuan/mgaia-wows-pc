@@ -67,7 +67,7 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item v-for="server in $dictionaries.get('Server')" 
                 :key="server.value" style="padding: 0 20px;width: 60px;"
-                @click.native="$store.commit('cust/SET_SERVER',server.value)"
+                @click.native="setServer(server.value)"
               >
                 {{server.label}}
               </el-dropdown-item>
@@ -100,6 +100,13 @@ export default {
     }
   },
   created:function(){
+    if(this.$commonUtils.isNull( this.$electronStore.get("showItemList"))){
+      this.$commonUtils.isNull( this.$electronStore.set("showItemList",this.$dictionaries.get('ShowItemList')))
+    }
+    if(!this.$commonUtils.isNull( this.$electronStore.get("server"))){
+      this.setServer(this.$electronStore.get("server"))
+    }
+    
 
     this.$store.commit('wowsConfig/SET_REAL_BATTLE_PATH',this.$electronStore.get("realBattlePath"))
     this.activeRoute=this.$route.fullPath;
@@ -175,6 +182,11 @@ export default {
       this.$store.commit('player/SET_ACCOUNT_ID',row.account_id)
       this.$store.dispatch('player/initData')
       this.findPlayerDialogVisible=false
+    },
+    // 设置服务器
+    setServer(server){
+      this.$electronStore.set("server",server)
+      this.$store.commit('cust/SET_SERVER',server)
     },
     //退出
     logout(){

@@ -31,5 +31,13 @@ const dictionariesMap = {
     {label:"巡洋",value:"Cruiser"},
     {label:"驱逐",value:"Destroyer"}      
   ],
+  ShowItemList:[
+    "场次",
+    '胜利',
+    'K/D',
+    "经验",
+    "场均",
+    "命中"
+  ]
 }
 export default { get(name) { return dictionariesMap[name] } }

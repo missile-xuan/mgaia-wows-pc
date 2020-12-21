@@ -26,8 +26,9 @@
       <div class="battle-info">
         
         <div class="left">
-          <div>
+          <div class="remind">
             <el-input v-model="darkSearch" size="small" placeholder="ID模糊搜索"></el-input>
+            <div style="margin-left:10px"> 提醒：双击id可跳转战绩详情</div>
           </div>
           <div class="player-info" v-for="player in showBattle.left" :key="player.id">
             <template v-if="$commonUtils.isNull(player.data)">
@@ -40,34 +41,34 @@
               <div class="shipimg" v-else-if="player.data.playerShipData==null">
                 无法查询到船只
               </div>
-              <div v-else class="shipimg">
+              <div v-else class="shipimg-div">
                 <img class="shipimg" :src="player.data.playerShipData.image" >
+                <div class="ship" v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
               </div>
               <div :class="{'player-name':true,find:!$commonUtils.isNull(darkSearch)&&player.name.indexOf(darkSearch)!=-1}"  @dblclick="playerClick(player)">
                 <div class="name">{{player.name}}</div>
-                <div class="ship" v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
               </div>
               <div v-if="player.data!='隐藏战绩或查询失败'">
                 <div class="battle-all" v-if="player.data.playerClanData!=null">
                   <div>
                     总体:
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('场次')!=-1">
                     <img class="icon-img" src="~@/assets/composite/count.png">{{player.data.playerClanData.fightingNum}}
                   </div>
-                  <div :class="getColor(player.data.playerClanData.winningProbability)">
+                  <div v-show="showItemList.indexOf('胜利')!=-1" :class="getColor(player.data.playerClanData.winningProbability)">
                     <img class="icon-img" src="~@/assets/composite/win.png">{{player.data.playerClanData.winningProbability}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('K/D')!=-1">
                     <img class="icon-img" src="~@/assets/composite/proportion.png">{{player.data.playerClanData.killRatio}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('经验')!=-1">
                     <img class="icon-img" src="~@/assets/composite/exp.png">{{player.data.playerClanData.expexperience}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('场均')!=-1">
                     <img class="icon-img" src="~@/assets/composite/damage.png">{{player.data.playerClanData.aveDamage}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('命中')!=-1">
                     <img class="icon-img" src="~@/assets/composite/hit.png">{{player.data.playerClanData.hitRate}}
                   </div>
 
@@ -76,22 +77,22 @@
                   <div>
                     单船:
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('场次')!=-1">
                     <img class="icon-img" src="~@/assets/composite/count.png">{{player.data.playerShipData.fightingNum}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('胜利')!=-1">
                     <img class="icon-img" src="~@/assets/composite/win.png">{{player.data.playerShipData.winningProbability}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('K/D')!=-1">
                     <img class="icon-img" src="~@/assets/composite/proportion.png">{{player.data.playerShipData.killRatio}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('经验')!=-1">
                     <img class="icon-img" src="~@/assets/composite/exp.png">{{player.data.playerShipData.expexperience}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('场均')!=-1">
                     <img class="icon-img" src="~@/assets/composite/damage.png">{{player.data.playerShipData.aveDamage}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('命中')!=-1">
                     <img class="icon-img" src="~@/assets/composite/hit.png">{{player.data.playerShipData.hitRate}}
                   </div>
                 </div>
@@ -102,7 +103,9 @@
         <div class="center"></div>
         <div class="right">
           <div class="remind" >
-            提醒：双击id可跳转战绩详情
+            <el-checkbox-group v-model="showItemList" @change="setShowItemList">
+              <el-checkbox v-for="item in  $dictionaries.get('ShowItemList')" :label="item" :key="item">{{item}}</el-checkbox>
+            </el-checkbox-group>
           </div>
           <div class="player-info" style="justify-content: flex-start" v-for="player in showBattle.right" :key="player.id">
             <template v-if="$commonUtils.isNull(player.data)">
@@ -115,34 +118,34 @@
               <div class="shipimg" v-else-if="player.data.playerShipData==null">
                 无法查询到船只
               </div>
-              <div v-else class="shipimg">
+              <div v-else class="shipimg-div">
                 <img class="shipimg" :src="player.data.playerShipData.image">
+                <div class="ship" v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
               </div>
               <div :class="{'player-name':true,find:!$commonUtils.isNull(darkSearch)&&player.name.indexOf(darkSearch)!=-1}" @dblclick="playerClick(player)">
                 <div class="name" >{{player.name}}</div>
-                <div class="ship" v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
               </div>
               <div v-if="player.data!='隐藏战绩或查询失败'">
                 <div class="battle-all" v-if="player.data.playerClanData!=null">
                   <div>
                     总体:
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('场次')!=-1">
                     <img class="icon-img" src="~@/assets/composite/count.png">{{player.data.playerClanData.fightingNum}}
                   </div>
-                  <div :class="getColor(player.data.playerClanData.winningProbability)">
+                  <div v-show="showItemList.indexOf('胜利')!=-1" :class="getColor(player.data.playerClanData.winningProbability)">
                     <img class="icon-img" src="~@/assets/composite/win.png">{{player.data.playerClanData.winningProbability}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('K/D')!=-1">
                     <img class="icon-img" src="~@/assets/composite/proportion.png">{{player.data.playerClanData.killRatio}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('经验')!=-1">
                     <img class="icon-img" src="~@/assets/composite/exp.png">{{player.data.playerClanData.expexperience}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('场均')!=-1">
                     <img class="icon-img" src="~@/assets/composite/damage.png">{{player.data.playerClanData.aveDamage}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('命中')!=-1">
                     <img class="icon-img" src="~@/assets/composite/hit.png">{{player.data.playerClanData.hitRate}}
                   </div>
 
@@ -151,22 +154,22 @@
                   <div>
                     单船:
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('场次')!=-1">
                     <img class="icon-img" src="~@/assets/composite/count.png">{{player.data.playerShipData.fightingNum}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('胜利')!=-1">
                     <img class="icon-img" src="~@/assets/composite/win.png">{{player.data.playerShipData.winningProbability}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('K/D')!=-1">
                     <img class="icon-img" src="~@/assets/composite/proportion.png">{{player.data.playerShipData.killRatio}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('经验')!=-1">
                     <img class="icon-img" src="~@/assets/composite/exp.png">{{player.data.playerShipData.expexperience}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('场均')!=-1">
                     <img class="icon-img" src="~@/assets/composite/damage.png">{{player.data.playerShipData.aveDamage}}
                   </div>
-                  <div>
+                  <div v-show="showItemList.indexOf('命中')!=-1">
                     <img class="icon-img" src="~@/assets/composite/hit.png">{{player.data.playerShipData.hitRate}}
                   </div>
                 </div>
@@ -192,7 +195,8 @@ export default {
     return {
       battleData:this.$store.getters.battleTeam,
       battleActive:'now',
-      darkSearch:''
+      darkSearch:'',
+      showItemList:this.$electronStore.get("showItemList",this.showItemList)
     }
   },
   computed: {
@@ -257,6 +261,9 @@ export default {
       }else{
         return 's'
       }
+    },
+    setShowItemList(){
+      this.$electronStore.set("showItemList",this.showItemList)
     }
   }
 }
@@ -298,16 +305,17 @@ export default {
     justify-content:space-between
 
     .left{
-      min-width 800px
+      // min-width 800px
       flex 1
     }
     .right{
-      min-width 800px
+      // min-width 800px
       flex 1
     }
   }
 }
 .remind{
+  display flex
   height: 32px;
   line-height: 32px;
   color: $text-color-text-black;
@@ -321,8 +329,9 @@ export default {
   cursor: pointer;
 
   .name{
-    height 35px
-    line-height 35px
+    height 70px
+    line-height 70px
+    font-weight: 700;
   }
   .ship{
     height 35px
@@ -338,8 +347,12 @@ export default {
   background:#e1eeff
 }
 .shipimg{
-  height: 70px;
-  width:120px;
+  height: 45px;
+  width:77px;
+}
+.shipimg-div{
+  width: 150px;
+  text-align: center;
 }
 .battle-all{
   display:flex
@@ -347,6 +360,9 @@ export default {
 .battle-all>div{
   height 35px
   line-height 35px
+}
+.battle-all>div:nth-child(1){
+  width:40px
 }
 .battle-all>div:nth-child(2){
   width:60px

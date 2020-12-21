@@ -1,5 +1,5 @@
 'use strict'
-
+import {handleUpdate} from './update'
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
@@ -13,7 +13,7 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 1280,
+    width: 1900,
     height: 720,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -37,6 +37,7 @@ async function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
+  handleUpdate(win)
 }
 
 // Quit when all windows are closed.

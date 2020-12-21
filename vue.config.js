@@ -11,10 +11,25 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
+        // see https://www.electron.build/configuration/publish#genericserveroptions
+        publish: {
+          provider: 'generic',
+          url: ''
+          // url: 'https://mgaia.top/update/wowspc'
+        },
         win: {
           icon: './public/app.ico'
         },
-        productName: 'mgaia-wows-pc-app'
+        productName: 'mgaia-wows-pc-app',
+        nsis: {
+          oneClick: false,
+          // 允许修改安装目录
+          allowToChangeInstallationDirectory: true, 
+          allowElevation: true,
+          createDesktopShortcut: true,
+          createStartMenuShortcut: true,
+          shortcutName: 'wows憨批伴侣'
+        }
       }
     }
   }

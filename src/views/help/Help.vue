@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div>版本:0.1.0</div>
+    
     <div>作者：[kko]missile_gaia</div>
     <div>反馈群：1050053532</div>
     <div>没放自动更新,可以来群里下载</div>

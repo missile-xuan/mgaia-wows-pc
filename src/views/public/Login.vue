@@ -92,6 +92,7 @@ export default {
     },
     deleteRealBattlePath(){
       this.$electronStore.delete('realBattlePath')
+      this.$electronStore.delete('showItemList')
     }
     
   }
