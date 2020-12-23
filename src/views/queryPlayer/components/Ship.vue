@@ -78,7 +78,9 @@
         </el-col>
         <el-col :span="18">
           <div>{{ship.shipName}}  {{ship.shipGrade}}级</div>
+          <div class="battle-date">最后战斗时间: {{formatDate(ship.lastBattleTime)}}</div>
           <div class="info-title" style="padding-top:10px">{{ship.description}}</div>
+          
         </el-col>
       </el-row>
       
@@ -124,10 +126,12 @@
         </el-col>
       </el-row>
     </div>
+    <div style="height:60px;"></div>
   </div>
 </template>
 
 <script>
+import moment from 'moment'
 // 船只查询页面
 export default {
   name: 'Ship',
@@ -151,6 +155,10 @@ export default {
       this.$store.commit("player/SET_SHIP_GRADE_SHIP",this.shipGrade)
       this.$store.dispatch("player/findPlayerShipStatistic")
 
+    },
+    formatDate(date){
+
+      return moment.unix(date).format("YYYY-M-D H:mm:ss");
     }
   }
     
@@ -187,5 +195,9 @@ export default {
 }
 .ship-image{
   height 150px
+}
+.battle-date{
+  font-size:14px;
+  color: #383a42
 }
 </style>

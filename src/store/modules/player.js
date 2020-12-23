@@ -137,7 +137,13 @@ const actions = {
       shipGrade:state.shipGradeShip,
     }).then((response) => {
       console.log(  response)
-      commit("SET_SHIP_DATA_LIST",response);
+      response.sort((a,b)=>{
+        return b.lastBattleTime-a.lastBattleTime
+      })
+      // 按照最后战斗时间排序
+      commit("SET_SHIP_DATA_LIST",response.sort((a,b)=>{
+        return b.lastBattleTime-a.lastBattleTime
+      }));
     }).catch(error=>{
       console.log(error)
       commit("SET_SHIP_DATA_LIST",false);

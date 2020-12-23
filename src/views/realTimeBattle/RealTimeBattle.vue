@@ -27,7 +27,7 @@
         
         <div class="left">
           <div class="remind">
-            <el-input v-model="darkSearch" size="small" placeholder="ID模糊搜索"></el-input>
+            <el-input style="width:200px;" v-model="darkSearch" size="small" placeholder="ID模糊搜索"></el-input>
             <div style="margin-left:10px"> 提醒：双击id可跳转战绩详情</div>
           </div>
           <div class="player-info" v-for="player in showBattle.left" :key="player.id">
@@ -43,10 +43,15 @@
               </div>
               <div v-else class="shipimg-div">
                 <img class="shipimg" :src="player.data.playerShipData.image" >
-                <div class="ship" v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
+                <div v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
               </div>
-              <div :class="{'player-name':true,find:!$commonUtils.isNull(darkSearch)&&player.name.indexOf(darkSearch)!=-1}"  @dblclick="playerClick(player)">
-                <div class="name">{{player.name}}</div>
+              <div :class="{'player-name':true,find:fuzzySearch(player.name,darkSearch)}"  @dblclick="playerClick(player)">
+                <div>
+                  <div v-if="!$commonUtils.isNull(player.data.playerClanData)&&!$commonUtils.isNull(player.data.playerClanData.tag)" class="name">
+                    [{{player.data.playerClanData.tag}}]
+                  </div>
+                  <div class="name">{{player.name}}</div>
+                </div>
               </div>
               <div v-if="player.data!='隐藏战绩或查询失败'">
                 <div class="battle-all" v-if="player.data.playerClanData!=null">
@@ -120,10 +125,15 @@
               </div>
               <div v-else class="shipimg-div">
                 <img class="shipimg" :src="player.data.playerShipData.image">
-                <div class="ship" v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
+                <div class="" v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
               </div>
-              <div :class="{'player-name':true,find:!$commonUtils.isNull(darkSearch)&&player.name.indexOf(darkSearch)!=-1}" @dblclick="playerClick(player)">
-                <div class="name" >{{player.name}}</div>
+              <div :class="{'player-name':true,find:fuzzySearch(player.name,darkSearch)}" @dblclick="playerClick(player)">
+                <div>
+                  <div v-if="!$commonUtils.isNull(player.data.playerClanData)&&!$commonUtils.isNull(player.data.playerClanData.tag)" class="name">
+                    [{{player.data.playerClanData.tag}}]
+                  </div>
+                  <div class="name">{{player.name}}</div>
+                </div>
               </div>
               <div v-if="player.data!='隐藏战绩或查询失败'">
                 <div class="battle-all" v-if="player.data.playerClanData!=null">
@@ -264,6 +274,17 @@ export default {
     },
     setShowItemList(){
       this.$electronStore.set("showItemList",this.showItemList)
+    },
+    fuzzySearch(name,darkSearch){
+      if(this.$commonUtils.isNull(darkSearch)){return false}
+      name.toLocaleLowerCase()
+      
+      if(name.toLocaleLowerCase().indexOf(darkSearch.toLocaleLowerCase())==-1){
+        return false
+      }
+
+      return true
+
     }
   }
 }
@@ -325,17 +346,16 @@ export default {
   background: cadetblue;
 }
 .player-name{
+  height 72px
   width:160px;
   cursor: pointer;
+  display flex
+  // flex-direction column
+  align-items:center 
 
   .name{
-    height 70px
-    line-height 70px
+    line-height 20px
     font-weight: 700;
-  }
-  .ship{
-    height 35px
-    line-height 35px
   }
 }
 .player-info{
