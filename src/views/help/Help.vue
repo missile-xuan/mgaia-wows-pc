@@ -3,12 +3,10 @@
     
     <div>作者：[kko]missile_gaia</div>
     <div>反馈群：1050053532</div>
-    <div>0.1.6</div>
+    <div>0.1.7</div>
     <div>==================</div>
     <div>更新：</div>
-    <div>优化模糊搜索</div>
-    <div>实时战斗增加舰队显示</div>
-    <div>舰船查询按战斗时间倒序</div>
+    <div>加长超时时间</div>
     <div>==================</div>
     <div>有意见建议欢迎加群提</div>
     <div>合理建议包您满意</div>
