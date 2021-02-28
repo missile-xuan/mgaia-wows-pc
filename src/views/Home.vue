@@ -130,7 +130,7 @@ export default {
   },
   methods:{
     // 解析实施战斗文件
-    analyticBattleJson(){
+    async analyticBattleJson(){
       const data = fs.readFileSync(this.$store.getters.realBattlePath+'/tempArenaInfo.json', 'utf-8');
       JSON.stringify
       if(this.$store.getters.rawData== data){
@@ -143,7 +143,7 @@ export default {
       //清除战斗团队
       this.$store.dispatch('battle/deleteBattleTeam')
       //添加战斗团队
-      this.$store.dispatch('battle/addBattleTeam',dataJston)
+      await this.$store.dispatch('battle/addBattleTeam',dataJston)
       // 获取战斗团队数据
       this.$store.dispatch('battle/setBattleTeamData')
     },

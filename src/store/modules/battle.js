@@ -1,4 +1,4 @@
-import {findPlayerTealTimeBattleOverallData} from '@/api/wowsBattle.js'
+import {findPlayerTealTimeBattleOverallData,findShipParameterByShipId} from '@/api/wowsBattle.js'
 import commonUtils from '@/utils/commonUtils.js'
 import store from '@/store'
 const state = {
@@ -32,15 +32,53 @@ const actions = {
     commit("SET_BATTLE_TEAM",{});
   },
   // 添加战斗团队
-  addBattleTeam({commit},dataJston){
+  async addBattleTeam({commit},dataJston){
+    console.log('添加战斗团队')
+    let AirCarrier = [] //航母
+    let Battleship = [] //战列
+    let Cruiser = [] //巡洋
+    let Destroyer = [] //驱逐舰
+
     for(let player of dataJston.vehicles){
       player.dateTime = dataJston.dateTime
-      state.battleTeam[player.name]={...player}
+      //获取船只参数
+      await findShipParameterByShipId({shipId:player.shipId}).then((response) => {
+        player.ship=response
+      }).catch(error=>{
+        console.log(error)
+      })
+      switch(player.ship.shipType){
+        case "AirCarrier" :
+          AirCarrier.push(player)
+          break
+        case "Battleship" :
+          Battleship.push(player)
+          break
+        case "Cruiser" :
+          Cruiser.push(player)
+          break
+        case "Destroyer" :
+          Destroyer.push(player)
+          break
+      }
+    }
+    for(let player of AirCarrier){
+      state.battleTeam[player.name]={...player}  
+    }
+    for(let player of Battleship){
+      state.battleTeam[player.name]={...player}  
+    }
+    for(let player of Cruiser){
+      state.battleTeam[player.name]={...player}  
+    }
+    for(let player of Destroyer){
+      state.battleTeam[player.name]={...player}  
     }
     commit("SET_BATTLE_TEAM",state.battleTeam);
   },
   // 获取战斗数据
   setBattleTeamData({commit}){
+    console.log('获取战斗数据')
     for(let nickname in state.battleTeam){
       if(nickname[0]==':'){
         // 机器人

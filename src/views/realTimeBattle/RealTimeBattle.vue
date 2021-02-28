@@ -35,15 +35,9 @@
               <loading></loading>
             </template>
             <template v-else>
-              <div class="shipimg" v-if="player.data=='隐藏战绩或查询失败'">
-                隐藏战绩<br>或者<br>查询失败
-              </div>
-              <div class="shipimg" v-else-if="player.data.playerShipData==null">
-                无法查询到船只
-              </div>
-              <div v-else class="shipimg-div">
-                <img class="shipimg" :src="player.data.playerShipData.image" >
-                <div v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
+              <div class="shipimg-div">
+                <img class="shipimg" :src="player.ship.image" >
+                <div >{{player.ship.shipName}}</div>
               </div>
               <div :class="{'player-name':true,find:fuzzySearch(player.name,darkSearch)}"  @dblclick="playerClick(player)">
                 <div>
@@ -102,6 +96,11 @@
                   </div>
                 </div>
               </div>
+              <div v-else>
+                <div class="battle-all">
+                    隐藏战绩或查询失败
+                </div>
+              </div>
             </template>
           </div>
         </div>
@@ -117,15 +116,9 @@
               <loading></loading>
             </template>
             <template v-else>
-              <div class="shipimg" v-if="player.data=='隐藏战绩或查询失败'">
-                隐藏战绩<br>或者<br>查询失败
-              </div>
-              <div class="shipimg" v-else-if="player.data.playerShipData==null">
-                无法查询到船只
-              </div>
-              <div v-else class="shipimg-div">
-                <img class="shipimg" :src="player.data.playerShipData.image">
-                <div class="" v-if="player.data!='隐藏战绩或查询失败'&&player.data.playerShipData!=null">{{player.data.playerShipData.shipName}}</div>
+              <div class="shipimg-div">
+                <img class="shipimg" :src="player.ship.image" >
+                <div >{{player.ship.shipName}}</div>
               </div>
               <div :class="{'player-name':true,find:fuzzySearch(player.name,darkSearch)}" @dblclick="playerClick(player)">
                 <div>
@@ -182,6 +175,11 @@
                   <div v-show="showItemList.indexOf('命中')!=-1">
                     <img class="icon-img" src="~@/assets/composite/hit.png">{{player.data.playerShipData.hitRate}}
                   </div>
+                </div>
+              </div>
+              <div v-else>
+                <div class="battle-all">
+                    隐藏战绩或查询失败
                 </div>
               </div>
             </template>

@@ -1,5 +1,12 @@
 import request from '@/utils/request.js'
 
+
+// 获取船只参数
+export function findShipParameterByShipId(data) {
+  return request.post('/wowsInfoPc/findShipParameterByShipId',data);
+}
+
+
 // 实时战斗查询战绩
 export function findPlayerTealTimeBattleOverallData(data) {
   return request.post('/wowsInfoPc/findPlayerTealTimeBattleOverallData',data);
