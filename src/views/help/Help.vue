@@ -3,10 +3,10 @@
     
     <div>作者：[kko]missile_gaia</div>
     <div>反馈群：1050053532</div>
-    <div>0.1.7</div>
+    <div>0.1.9</div>
     <div>==================</div>
     <div>更新：</div>
-    <div>加长超时时间</div>
+    <div>优化了排序,现在按照舰种等级排序了</div>
     <div>==================</div>
     <div>有意见建议欢迎加群提</div>
     <div>合理建议包您满意</div>

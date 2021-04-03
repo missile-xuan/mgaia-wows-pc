@@ -47,6 +47,7 @@ const actions = {
       }).catch(error=>{
         console.log(error)
       })
+      // 舰种筛选
       switch(player.ship.shipType){
         case "AirCarrier" :
           AirCarrier.push(player)
@@ -62,6 +63,22 @@ const actions = {
           break
       }
     }
+    // 等级筛选
+    function compare(previous,next){
+      if (previous.ship.shipGrade < next.ship.shipGrade) {
+        return 1;
+      } else if (previous.ship.shipGrade > next.ship.shipGrade) {
+        return -1;
+      } else {
+        return 0;
+      }
+    }
+
+    AirCarrier.sort(compare)
+    Battleship.sort(compare)
+    Cruiser.sort(compare)
+    Destroyer.sort(compare)
+    
     for(let player of AirCarrier){
       state.battleTeam[player.name]={...player}  
     }
