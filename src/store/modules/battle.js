@@ -48,7 +48,7 @@ const actions = {
         console.log(error)
       })
       // 舰种筛选
-      switch(player.ship.shipType){
+      switch(player.ship?.shipType){
         case "AirCarrier" :
           AirCarrier.push(player)
           break
