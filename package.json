@@ -34,15 +34,18 @@
       "url": ""
     },
     "nsis": {
+      "perMachine":true,
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "allowElevation": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "wows憨批伴侣"
+      "shortcutName": "wows憨批伴侣",
+      "installerIcon": "./assets/app.ico",
+      "installerHeaderIcon": "./assets/app.ico"
     },
     "win": {
-      "icon": "./assets/app.ico",
+      "icon": "./assets/app.png",
       "target": [
         {
           "target": "nsis",
