@@ -12,13 +12,15 @@ const browserWindowOptions: BrowserWindowConstructorOptions = {
 }
 
 /** 构建窗口 */
+// http://172.17.12.99:3000/
 // https://wows.mgaia.top/
 
 const createWindow = (url = 'https://wows.mgaia.top/'): BrowserWindow => {
   const win = new BrowserWindow({
     ...browserWindowOptions,
     webPreferences: {
-      preload: path.join(__dirname, 'src', 'preload.js')
+      preload: path.join(__dirname, 'src', 'preload.js'),
+      webSecurity: false // 开跨域
     }
   })
   // 隐藏顶部菜单栏

@@ -1,6 +1,6 @@
 {
   "name": "mgaia-wows-pc",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "main": "out/electron-app.js",
   "repository": "https://gitee.com/missile_xuan/mgaia-wows-pc",
   "author": "missile_gaia",
